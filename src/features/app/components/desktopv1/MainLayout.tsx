@@ -5,6 +5,7 @@ import cash from "../../assets/cash.png";
 import background from "../../assets/main__img.png";
 import main__img3 from "../../assets/main__img3.png"
 import arrow from "../../assets/arrow.png"
+import GoogleSheetsForm from "../googleSheet/GoogleSheet";
 
 const MainLayout: React.FC = () => {
   return (
@@ -35,7 +36,7 @@ const MainLayout: React.FC = () => {
           </div>
 
           <div className={styles.main__register}>
-            <button className={styles.register__button}>RO'YXATDAN O'TISH</button>
+            <a href="/register" className={styles.register__button}>RO'YXATDAN O'TISH</a>
             <div className={styles.price}>
               <div className={styles.number}><del>1 000 000</del></div>
               <div className={styles.free}>BEPUL</div>
@@ -66,9 +67,10 @@ const MainLayout: React.FC = () => {
           <img src={main__img3 } className={styles.sb__img} alt="" />
           
           <div className={styles.sb__btn}>
-          <button className={styles.register__button}>RO'YXATDAN O'TISH</button>
+          <a href="/register" className={styles.register__button}>RO'YXATDAN O'TISH</a>
           </div>
         </div>
+      
       </div>
     </div>
   );
