@@ -6,7 +6,6 @@ import background from "../../assets/main__img.png";
 import main__img3 from "../../assets/main__img3.png"
 import arrow from "../../assets/arrow.png"
 import CountdownTimer from "../timer/Timer";
-import GoogleSheetsForm from "../googleSheet/GoogleSheet";
 
 
 

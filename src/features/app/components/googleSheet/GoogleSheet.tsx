@@ -1,14 +1,14 @@
-import { useState } from 'react';
+import { useState, FormEvent, ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './GoogleSheetsForm.module.scss';
 
 const GoogleSheetsForm = () => {
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [name, setName] = useState<string>('');
+  const [phone, setPhone] = useState<string>('');
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
 
@@ -22,7 +22,6 @@ const GoogleSheetsForm = () => {
     const scriptUrl = 'https://script.google.com/macros/s/AKfycbzL1kXK98jeOh6tbAS0RCk7Uu06ilXrQLHDi0T8hV_NgAALtlysTTgWAAPlo4-CG1A/exec';
 
     try {
-      // Формируем URL с параметрами
       const params = new URLSearchParams();
       params.append('Name', name);
       params.append('Phone', phone);
@@ -35,7 +34,6 @@ const GoogleSheetsForm = () => {
         },
       });
 
-      // Проверяем успешность запроса
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -53,7 +51,7 @@ const GoogleSheetsForm = () => {
     }
   };
 
-  const handlePhoneChange = (e) => {
+  const handlePhoneChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     if (/[^0-9+]/.test(value)) return;
     if (value.length > 13) return;
@@ -74,7 +72,7 @@ const GoogleSheetsForm = () => {
               name="Name"
               type="text"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
               required
               className={styles.inputField}
               disabled={isSubmitting}
