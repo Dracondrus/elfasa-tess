@@ -5,9 +5,15 @@ import cash from "../../assets/cash.png";
 import background from "../../assets/main__img.png";
 import main__img3 from "../../assets/main__img3.png"
 import arrow from "../../assets/arrow.png"
+import CountdownTimer from "../timer/Timer";
 import GoogleSheetsForm from "../googleSheet/GoogleSheet";
 
+
+
 const MainLayout: React.FC = () => {
+
+  
+
   return (
     <div className={styles.main}>
       <div className={styles.main__container}>
@@ -36,7 +42,7 @@ const MainLayout: React.FC = () => {
           </div>
 
           <div className={styles.main__register}>
-            <a href="/register" className={styles.register__button}>RO'YXATDAN O'TISH</a>
+            <a href="/register" className={styles.register__button}>RO'YXATDAN O'TISH   </a>
             <div className={styles.price}>
               <div className={styles.number}><del>1 000 000</del></div>
               <div className={styles.free}>BEPUL</div>
@@ -44,6 +50,7 @@ const MainLayout: React.FC = () => {
             </div>
           </div>
         </div>
+        <CountdownTimer/>
         <div className={styles.side__bar}>
           <div className={styles.sb__title}>ONLINE MARAFONDA BILIB OLASIZ: </div>
           <div className={styles.sb__content}>
@@ -68,9 +75,12 @@ const MainLayout: React.FC = () => {
           
           <div className={styles.sb__btn}>
           <a href="/register" className={styles.register__button}>RO'YXATDAN O'TISH</a>
+        
           </div>
         </div>
       
+
+
       </div>
     </div>
   );

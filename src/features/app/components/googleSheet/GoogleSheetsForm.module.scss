@@ -4,7 +4,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #fff;  // Белый фон
+  padding: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -12,6 +12,8 @@
 }
 
 .googleSheetsForm {
+  margin:  10px;
+  position: absolute;
   display: flex;
   flex-direction: column;
   align-items: center;

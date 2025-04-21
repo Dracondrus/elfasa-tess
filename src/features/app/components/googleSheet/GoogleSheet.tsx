@@ -1,67 +1,83 @@
 import { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // Для навигации
-import styles from './GoogleSheetsForm.module.scss'; // Импортируем стили
+import { useNavigate } from 'react-router-dom';
+import styles from './GoogleSheetsForm.module.scss';
 
 const GoogleSheetsForm = () => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [error, setError] = useState('');
-  const navigate = useNavigate(); // Для навигации
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
-    // Проверка, что номер телефона заполнен корректно
+    // Валидация телефона
     if (!phone || phone.length !== 13 || !/^\+998\d{9}$/.test(phone)) {
-      setError('Tog\'ri kiriting telefon raqamni'); // Сообщение об ошибке
+      alert("Iltimos, telefon raqamni to'g'ri kiriting (+998XXXXXXXXX)");
+      setIsSubmitting(false);
       return;
     }
 
-    const sheetId = '1tEjSclR5Ji7Oz5WJCW6lD6_J-QgWFB-8LR47Fxf8sdo'; // Замените на ID вашего Google Sheets
-    const apiKey = 'AIzaSyBGUm7Ag_RDfMi8W3YS39-qOJ0EPscFMfk'; // Замените на ваш API ключ
+    const scriptUrl = 'https://script.google.com/macros/s/AKfycbzL1kXK98jeOh6tbAS0RCk7Uu06ilXrQLHDi0T8hV_NgAALtlysTTgWAAPlo4-CG1A/exec';
 
     try {
-      // Отправляем данные в Google Sheets
-      await axios.post(
-        `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Sheet1!A1:B1:append?valueInputOption=RAW&key=${apiKey}`,
-        {
-          values: [
-            [name, phone], // Данные, которые хотите отправить
-          ],
-        }
-      );
+      // Формируем URL с параметрами
+      const params = new URLSearchParams();
+      params.append('Name', name);
+      params.append('Phone', phone);
+
+      const response = await fetch(`${scriptUrl}?${params.toString()}`, {
+        method: 'POST',
+        redirect: 'follow',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      });
+
+      // Проверяем успешность запроса
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.text();
+      console.log('Success:', result);
       alert('Ma\'lumotlar muvaffaqiyatli yuborildi!');
+      setName('');
+      setPhone('');
     } catch (error) {
       console.error('Xatolik yuz berdi:', error);
-      alert('Xatolik yuz berdi.');
+      alert('Ma\'lumotlarni yuborishda xatolik yuz berdi. Iltimos, keyinroq urunib ko\'ring.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handlePhoneChange = (e) => {
     const value = e.target.value;
-    // Форматируем номер телефона в виде +998 __ ___ __ __
-    if (/[^0-9+]/.test(value)) return; // Разрешаем только цифры и плюс
-    if (value.length > 13) return; // Не даём ввести больше символов
+    if (/[^0-9+]/.test(value)) return;
+    if (value.length > 13) return;
     setPhone(value);
   };
 
   const handleBackClick = () => {
-    navigate('/'); // Перенаправляем на главную страницу
+    navigate('/');
   };
 
   return (
-    <div className={styles.whiteBackground}> {/* Этот контейнер накрывает весь экран белым фоном */}
+    <div className={styles.whiteBackground}>
       <form onSubmit={handleSubmit} className={styles.googleSheetsForm}>
         <div className={styles.formGroup}>
           <label>
             Ism:
             <input
+              name="Name"
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
               className={styles.inputField}
+              disabled={isSubmitting}
             />
           </label>
         </div>
@@ -69,6 +85,7 @@ const GoogleSheetsForm = () => {
           <label>
             Telefon raqam:
             <input
+              name="Phone"
               type="tel"
               value={phone}
               onChange={handlePhoneChange}
@@ -76,12 +93,25 @@ const GoogleSheetsForm = () => {
               maxLength={13}
               required
               className={styles.inputField}
+              disabled={isSubmitting}
             />
           </label>
-          {error && <p className={styles.errorText}>{error}</p>} {/* Сообщение об ошибке */}
         </div>
-        <button type="submit" className={styles.submitButton}>Yuborish</button>
-        <button type="button" onClick={handleBackClick} className={styles.backButton}>Orqaga</button>
+        <button 
+          type="submit" 
+          className={styles.submitButton}
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? 'Yuborilmoqda...' : 'Yuborish'}
+        </button>
+        <button 
+          type="button" 
+          onClick={handleBackClick} 
+          className={styles.backButton}
+          disabled={isSubmitting}
+        >
+          Orqaga
+        </button>
       </form>
     </div>
   );
